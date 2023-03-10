@@ -1,40 +1,44 @@
 //
 // Created by Lenovo on 2023/3/8.
 //
+
+// 读文件 预处理
 #include "word_list.h"
-void a(char * s[]) {
-    cout << s[0] << endl;
+#include "Core.h"
+
+void a(char *s[]) {
+
 }
 
 int isChar(char *str) {
     int length = strlen(str);
     if (length > 1) {
-        return -1; //todo 报错
+        return -1; //option 报错
     } else if ((str[0] >= 'A' && str[0] <= 'Z') or (str[0] >= 'a' && str[0] <= 'z')) {
         return 0;
     } else {
-        return -2; // todo 报错
+        return -2; // option 报错
     }
 }
 
-void readCommand(int argc, char *argv[]) {
+int readCommand(int argc, char *argv[], char **wordsR[], int* len) {
     for (int i = 1; i < argc - 1; i++) {
         //if (argv[i] == "-n") {
         if (strcmp(argv[i], "-n") == 0) {
-            if (todo == TodoOption::DEFAULT && tail == 0 && head == 0 && !isRing) {
-                todo = TodoOption::N_ALL_CHAIN;
+            if (option == Option::DEFAULT && tail == 0 && head == 0 && !isRing) {
+                option = Option::N_ALL_CHAIN;
             } else {
-                // todo  处理参数冲突
+                // option  处理参数冲突
             }
         } else if (strcmp(argv[i], "-c") == 0) {
-            if (todo == TodoOption::DEFAULT) {
-                todo = TodoOption::C_MAX;
+            if (option == Option::DEFAULT) {
+                option = Option::C_MAX;
             } else {
                 //
             }
         } else if (strcmp(argv[i], "-w") == 0) {
-            if (todo == TodoOption::DEFAULT) {
-                todo = TodoOption::W_MAX;
+            if (option == Option::DEFAULT) {
+                option = Option::W_MAX;
             } else {
                 //
             }
@@ -44,7 +48,7 @@ void readCommand(int argc, char *argv[]) {
                 // 报错
             } else if ((r = isChar(argv[i + 1]) != 0)) {
                 // 根据r值报错
-            } else if (todo == TodoOption::N_ALL_CHAIN) {
+            } else if (option == Option::N_ALL_CHAIN) {
                 // n冲突
             } else {
                 reject = argv[++i][0];
@@ -55,7 +59,7 @@ void readCommand(int argc, char *argv[]) {
                 //TODO: 已有h
             } else if ((r = isChar(argv[i + 1])) != 0) {
                 //TODO:
-            } else if (todo == TodoOption::N_ALL_CHAIN) {
+            } else if (option == Option::N_ALL_CHAIN) {
                 // n冲突
             } else {
                 head = argv[++i][0];
@@ -66,7 +70,7 @@ void readCommand(int argc, char *argv[]) {
                 //TODO: 已有t
             } else if ((r = isChar(argv[i + 1])) != 0) {
                 //TODO:
-            } else if (todo == TodoOption::N_ALL_CHAIN) {
+            } else if (option == Option::N_ALL_CHAIN) {
                 // n冲突
             } else {
                 tail = argv[++i][0];
@@ -83,54 +87,73 @@ void readCommand(int argc, char *argv[]) {
         || argv[argc - 1][length - 1] != 't') {
         //TODO: 文件名错误
     }
-    vector<string> words;
+    static vector<char *> words;
+    int cntw = 0;
     string filename = argv[argc - 1];
-    ifstream fin(filename.c_str());
+    ifstream fin(filename.c_str(),ios::in | ios::binary | ios::ate);
     string strLine;
+    static ios::pos_type size = fin.tellg();
+    fin.seekg(0);
+    static string raw_input(size, 0);
     if (fin.is_open()) {
-        while (getline(fin, strLine)) {
-            string word = "";
-            length = (int) strlen(strLine.c_str());
-            for (int i = 0; i < length; i++) {
-                if(strLine.c_str()[i] >= 'a' && strLine.c_str()[i] <= 'z') {
-                    word += strLine.c_str()[i];
-                } else if (strLine.c_str()[i] >= 'A' && strLine.c_str()[i] <= 'Z')  {
-                    word += tolower( strLine.c_str()[i]);
+
+        fin.read(raw_input.data(), size);
+            //string word = "";
+            //length = (int) strlen(strLine.c_str());
+            for (int i = 0, first = -1; i < size; i++) {
+                char &c = raw_input.data()[i];
+                if (c >= 'a' && c <= 'z') {
+                    if (i != first) words.push_back(&c);
+                    first = i + 1;
+                } else if (c >= 'A' && c <= 'Z') {
+                    if (i != first) words.push_back(&c);
+                    c = ::tolower(c);
+                    first = i + 1;
                 } else {
-                    if (strlen(word.c_str()) > 0) {
-                        words.push_back(word);
-                        word = "";
-                    }
+
+                        c = 0;
                 }
             }
-            if (strlen(word.c_str()) > 0) {
-                words.push_back(word);
-                word = "";
-            }
-        }
     } else {
         // TODO:报错
     }
-
-
-    set<string> wordsSet(words.begin(), words.end());
-
-    for(string s : wordsSet){
-        cout << s << endl;
+    for(int i = 0; i < 2; i++){
+        cout << words[i] << endl;
     }
-
-    a(reinterpret_cast<char **>(&words[0]));
-
+    *len = words.size();
+    *wordsR = words.data();
+    fin.close();
+    return 0;
 }
 
-
-// todo 处理文件 以及 报错
+// option 处理文件 以及 报错
 
 
 int main(int argc, char *argv[]) {
+    char **words[MAX_LEN];
     argc = 3;
-    argv[0] = ".\\word_list.exe";
-    argv[1] = "-w";
-    argv[2] = "test.txt";
-    readCommand(argc, argv);
+    argv[0] = "exe";
+    argv[1] = "-n";
+    argv[2] = "./test.txt";
+    int len;
+    readCommand(argc, argv, words, &len);
+
+    char *results[MAX_LEN];
+    switch (option) {
+        case Option::N_ALL_CHAIN:
+            Core::gen_chains_all(*words, len , results);
+            break;
+        case Option::W_MAX:
+            Core::gen_chain_word(*words, len, results, head, tail, reject,
+                                 isRing);
+            break;
+        case Option::C_MAX:
+            Core::gen_chain_char(*words, len, results, head, tail, reject,
+                                 isRing);
+            break;
+        default:
+            return 0;
+    }
+
+
 }
