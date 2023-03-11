@@ -4,27 +4,21 @@
 
 #ifndef INC_2023SE_WORD_LIST_CORE_H
 #define INC_2023SE_WORD_LIST_CORE_H
-
-
-#include "word_list.h"
-
+#include "N_Slover.h"
 static int m;
 static vector<string> s;
-
-void init_words(char* words[], int len){
-    s.clear();
-    for(int i = 0;i < len;i++){
-        string S = words[i];
-        if(S.length() == 1) continue;
-        s.push_back(S);
-    }
-    m = (int)s.size();
-}//TODO:
-
+static int edge[26][26];
 // 接口类 创建图
 struct Core {
-
-
+    static void init_words(char* words[], int len){
+        s.clear();
+        for(int i = 0;i < len;i++){
+            string S = words[i];
+            if(S.length() == 1) continue;
+            s.push_back(S);
+        }
+        m = (int)s.size();
+    }
     static void genMap(char *words[], int len, set<string> wordMap[26][26], char rejectChar) {
         init_words(words,len);
         for (int i = 0; i < len; i++) {
@@ -35,7 +29,13 @@ struct Core {
             }
         }
     }
-    //TODO: getEdgeNum
+    static void setEdge(set<string> word[26][26]) {
+        for (int i = 0; i < 26; i++) {
+            for (int j = 0; j < 26; j++) {
+                edge[i][j] = word[i][j].size();
+            }
+        }
+    }
 
     /*
      * 求所有的单词链
@@ -47,8 +47,15 @@ struct Core {
      * */
     static int gen_chains_all(char *words[], int len, char *result[]) {
         set<string> wordsMap[26][26];
-
         genMap(words, len, wordsMap, '\000');
+        setEdge(wordsMap);
+        auto solver = new N_Slover(edge, wordsMap, result);
+        int ans = solver->solve();
+        ::printf("%d\n",ans);
+        for (int i = 0; i < ans;i++) {
+            cout << result[i] << endl;
+        }
+        return solver->solve();
         return 0;
     }
 

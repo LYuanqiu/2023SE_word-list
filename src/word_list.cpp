@@ -117,9 +117,6 @@ int readCommand(int argc, char *argv[], char **wordsR[], int* len) {
     } else {
         // TODO:报错
     }
-    for(int i = 0; i < 2; i++){
-        cout << words[i] << endl;
-    }
     *len = words.size();
     *wordsR = words.data();
     fin.close();
