@@ -4,6 +4,7 @@
 
 #ifndef INC_2023SE_WORD_LIST_WORD_LIST_H
 #define INC_2023SE_WORD_LIST_WORD_LIST_H
+#define FOR_ALPHA(x) for(int x = 0; x < 26; x++)
 #include <cstdio>
 #include <iostream>
 #include <vector>
@@ -17,7 +18,7 @@
 #include <set>
 #include <sstream>
 #include <stdio.h>
-
+#include <filesystem>
 using namespace std;
 enum class Option {
     N_ALL_CHAIN,

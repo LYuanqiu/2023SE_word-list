@@ -6,6 +6,9 @@
 #include "word_list.h"
 #include "Core.h"
 
+using namespace std;
+using namespace std::filesystem;
+
 void a(char *s[]) {
 
 }
@@ -98,8 +101,6 @@ int readCommand(int argc, char *argv[], char **wordsR[], int* len) {
     if (fin.is_open()) {
 
         fin.read(raw_input.data(), size);
-            //string word = "";
-            //length = (int) strlen(strLine.c_str());
             for (int i = 0, first = -1; i < size; i++) {
                 char &c = raw_input.data()[i];
                 if (c >= 'a' && c <= 'z') {
@@ -117,9 +118,6 @@ int readCommand(int argc, char *argv[], char **wordsR[], int* len) {
     } else {
         // TODO:报错
     }
-    for(int i = 0; i < 2; i++){
-        cout << words[i] << endl;
-    }
     *len = words.size();
     *wordsR = words.data();
     fin.close();
@@ -131,10 +129,11 @@ int readCommand(int argc, char *argv[], char **wordsR[], int* len) {
 
 int main(int argc, char *argv[]) {
     char **words[MAX_LEN];
-    argc = 3;
+    argc = 4;
     argv[0] = "exe";
-    argv[1] = "-n";
-    argv[2] = "./test.txt";
+    argv[1] = "-w";
+    argv[2] = "-r";
+    argv[3] = "./test.txt";
     int len;
     readCommand(argc, argv, words, &len);
 
@@ -154,6 +153,4 @@ int main(int argc, char *argv[]) {
         default:
             return 0;
     }
-
-
 }

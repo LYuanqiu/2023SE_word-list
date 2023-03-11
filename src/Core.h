@@ -7,6 +7,10 @@
 
 
 #include "word_list.h"
+#include "WithRingSolver.h"
+#include "MaxWordWithRing.h"
+
+using namespace std;
 
 static int m;
 static vector<string> s;
@@ -19,12 +23,10 @@ void init_words(char* words[], int len){
         s.push_back(S);
     }
     m = (int)s.size();
-}//TODO:
+}
 
 // 接口类 创建图
 struct Core {
-
-
     static void genMap(char *words[], int len, set<string> wordMap[26][26], char rejectChar) {
         init_words(words,len);
         for (int i = 0; i < len; i++) {
@@ -47,7 +49,6 @@ struct Core {
      * */
     static int gen_chains_all(char *words[], int len, char *result[]) {
         set<string> wordsMap[26][26];
-
         genMap(words, len, wordsMap, '\000');
         return 0;
     }
@@ -67,6 +68,18 @@ struct Core {
      *
     * */
     static int gen_chain_word(char *words[], int len, char *result[], char headChar, char tailChar, char rejectChar, bool enable_loop) {
+        set<string> wordsMap[26][26];
+        vector<string> resultRet;
+        genMap(words, len, wordsMap, rejectChar);
+        if(enable_loop){
+            vector<string> resultR;
+            auto solver = new MaxWordWithRing(headChar, tail, isRing, wordsMap);
+            resultR = solver->handleMaxWordWithRing();
+
+        } else {
+
+        }
+
         return 0;
     }
 
@@ -86,6 +99,13 @@ struct Core {
      *
     * */
     static int gen_chain_char(char *words[], int len, char *result[], char headChar, char tailChar, char rejectChar, bool enable_loop) {
+        set<string> word[26][26];
+
+        if(enable_loop){
+
+        } else {
+
+        }
         return 0;
     }
 };
