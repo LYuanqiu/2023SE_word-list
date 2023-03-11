@@ -5,7 +5,7 @@
 #ifndef INC_2023SE_WORD_LIST_ALGORITHM_H
 #define INC_2023SE_WORD_LIST_ALGORITHM_H
 # include "word_list.h"
-
+#include "N_Slover.h"
 class Algorithm{
 protected:
     char headChar;

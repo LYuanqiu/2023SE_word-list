@@ -122,8 +122,8 @@ public:
             cout << max_chain_words[i] << endl;
         }
 
-
-        return max_chain_words;
+        vector<string> reorder_wordlist = reorderWords(wordlist,max_chain_words, map);
+        return reorder_wordlist;
     }
 };
 
