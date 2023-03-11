@@ -5,9 +5,12 @@
 #ifndef INC_2023SE_WORD_LIST_CORE_H
 #define INC_2023SE_WORD_LIST_CORE_H
 #include "N_Slover.h"
+#include "W_Slover.h"
+#include "C_Solver.h"
 static int m;
 static vector<string> s;
 static int edge[26][26];
+
 // 接口类 创建图
 struct Core {
     static void init_words(char* words[], int len){
@@ -50,13 +53,9 @@ struct Core {
         genMap(words, len, wordsMap, '\000');
         setEdge(wordsMap);
         auto solver = new N_Slover(edge, wordsMap, result);
-        int ans = solver->solve();
+        int l = solver->solve();
         ::printf("%d\n",ans);
-        for (int i = 0; i < ans;i++) {
-            cout << result[i] << endl;
-        }
-        return solver->solve();
-        return 0;
+        return l;
     }
 
     /*
@@ -74,7 +73,12 @@ struct Core {
      *
     * */
     static int gen_chain_word(char *words[], int len, char *result[], char headChar, char tailChar, char rejectChar, bool enable_loop) {
-        return 0;
+        set<string> wordsMap[26][26];
+        genMap(words, len, wordsMap, '\000');
+        setEdge(wordsMap);
+        auto solver = new W_Slover(edge, wordsMap, result, headChar, tailChar,enable_loop);
+        int l = solver->solve();
+        return l;
     }
 
 
@@ -93,7 +97,12 @@ struct Core {
      *
     * */
     static int gen_chain_char(char *words[], int len, char *result[], char headChar, char tailChar, char rejectChar, bool enable_loop) {
-        return 0;
+        set<string> wordsMap[26][26];
+        genMap(words, len, wordsMap, '\000');
+        setEdge(wordsMap);
+        auto solver = new C_Slover(edge, wordsMap, result, headChar, tailChar,enable_loop);
+        int l = solver->solve();
+        return l;
     }
 };
 
