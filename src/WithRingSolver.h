@@ -26,10 +26,10 @@ protected:
         return graph;
     }
 
-    vector<vector<int>> buildReversedMap(vector<vector<int>> &map, int size){
+    vector<vector<int>> buildReversedMap(vector<vector<int>> &map, int size) {
         vector<vector<int>> reversedMap(size);
-        for (int i = 0; i < size; i++){
-            for(int next : map[i]){
+        for (int i = 0; i < size; i++) {
+            for (int next: map[i]) {
                 reversedMap[next].push_back(i);
             }
         }
@@ -78,6 +78,9 @@ protected:
 
         return sccs;
     }
+
+
+
 
 };
 

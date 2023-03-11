@@ -128,6 +128,7 @@ int readCommand(int argc, char *argv[], char **wordsR[], int* len) {
 
 
 int main(int argc, char *argv[]) {
+
     char **words[MAX_LEN];
     argc = 4;
     argv[0] = "exe";

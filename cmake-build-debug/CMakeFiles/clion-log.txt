@@ -1,4 +1,0 @@
-"D:\program\CLion 2022.1.1\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=D:/program/CLion 2022.1.1/bin/ninja/win/ninja.exe" -G Ninja -S D:\courses\gradeThreeSpring\SE\2023SE_word-list -B D:\courses\gradeThreeSpring\SE\2023SE_word-list\cmake-build-debug
--- Configuring done
--- Generating done
--- Build files have been written to: D:/courses/gradeThreeSpring/SE/2023SE_word-list/cmake-build-debug

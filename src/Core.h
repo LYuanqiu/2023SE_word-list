@@ -87,6 +87,9 @@ struct Core {
             vector<string> resultR;
             auto solver = new MaxWordWithRing(headChar, tail, isRing, wordsMap);
             resultR = solver->handleMaxWordWithRing();
+            for(auto s:resultR){
+                cout << s << endl;
+            }
 
         } else {
             genMap(words, len, wordsMap, '\000');

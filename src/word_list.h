@@ -5,6 +5,7 @@
 #ifndef INC_2023SE_WORD_LIST_WORD_LIST_H
 #define INC_2023SE_WORD_LIST_WORD_LIST_H
 #define FOR_ALPHA(x) for(int x = 0; x < 26; x++)
+#define ALPHA_NUM 26
 #include <cstdio>
 #include <iostream>
 #include <vector>
