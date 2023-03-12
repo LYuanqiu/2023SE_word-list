@@ -100,7 +100,7 @@ private:
     set<vector<string>> result_tmp;
     vector<string> pre;
     bool sameTag = false;
-    int dfs_getResult(int x, int len) {
+    void dfs_getResult(int x, int len) {
         for (int i = 0; i < 26;i++) {
             if ((i != x || sameTag) && edge[x][i]) {
                 if (i == x) {

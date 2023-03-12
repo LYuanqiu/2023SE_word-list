@@ -70,7 +70,6 @@ struct Core {
         setEdge(wordsMap);
         auto solver = new N_Slover(edge, wordsMap, result);
         int l = solver->solve();
-        ::printf("%d\n",ans);
         return l;
     }
 
@@ -105,9 +104,6 @@ struct Core {
             int l = solver->solve();
             return l;
         }
-
-        return 0;
-
     }
 
 

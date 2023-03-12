@@ -9,15 +9,11 @@
 using namespace std;
 
 
-void a(char *s[]) {
-
-}
-
 int isChar(char *str) {
     int length = strlen(str);
     if (length > 1) {
         return -1; //option 报错
-    } else if ((str[0] >= 'A' && str[0] <= 'Z') or (str[0] >= 'a' && str[0] <= 'z')) {
+    } else if ((str[0] >= 'A' && str[0] <= 'Z') || (str[0] >= 'a' && str[0] <= 'z')) {
         return 0;
     } else {
         return -2; // option 报错
@@ -149,10 +145,10 @@ int main(int argc, char *argv[]) {
     argv[0] = "exe";
     argv[1] = "-c";
     argv[2] = "-r";
-    argv[3] = "./test.txt";
+    argv[3] = "test.txt";
     int len;
     readCommand(argc, argv, words, &len);
-    char buffer[MAX_NUM][MAX_LENGTH];
+    static char buffer[MAX_NUM][MAX_LENGTH];
     char *results[MAX_NUM];
     for(int i=0;i<MAX_NUM;i++){
         results[i] = buffer[i];

@@ -12,16 +12,16 @@ protected:
     char tailChar;
     char rejectChar;
     bool isRing;
-    setString wordMap[26][26];
+    set<string> wordMap[26][26];
 
 private:
 
 public:
-    Algorithm(setString wordMap,int *edgeNum[] ,char *result[]){
+    Algorithm(set<string> wordMap,int *edgeNum[] ,char *result[]){
 
     }
 
-    Algorithm(setString wordMap,int *edgeNum[] ,char *result[], char headChar, char tailChar, char rejectChar ,bool isRing ){
+    Algorithm(set<string> wordMap,int *edgeNum[] ,char *result[], char headChar, char tailChar, char rejectChar ,bool isRing ){
 
     }
 };

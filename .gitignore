@@ -1,3 +1,15 @@
 cmake-build-debug
 CMakeLists.txt
 .idea
+*.filters
+*.user
+*.vcxproj
+*.sln
+*.log
+.opencppcov
+*/.vs
+Debug
+Release
+solution.txt
+test.txt
+.vs
