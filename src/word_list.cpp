@@ -132,7 +132,7 @@ int main(int argc, char *argv[]) {
     char **words[MAX_LEN];
     argc = 4;
     argv[0] = "exe";
-    argv[1] = "-w";
+    argv[1] = "-c";
     argv[2] = "-r";
     argv[3] = "./test.txt";
     int len;

@@ -85,7 +85,7 @@ struct Core {
         genMap(words, len, wordsMap, rejectChar);
         if(enable_loop){
             vector<string> resultR;
-            auto solver = new MaxWordWithRing(headChar, tail, isRing, wordsMap);
+            auto solver = new MaxWordWithRing(headChar, tail, wordsMap, Option::W_MAX);
             resultR = solver->handleMaxWordWithRing();
             for(auto s:resultR){
                 cout << s << endl;
@@ -119,13 +119,17 @@ struct Core {
      *
     * */
     static int gen_chain_char(char *words[], int len, char *result[], char headChar, char tailChar, char rejectChar, bool enable_loop) {
-        set<string> word[26][26];
-
+        set<string> wordsMap[26][26];
+        vector<string> resultRet;
+        genMap(words, len, wordsMap, rejectChar);
         if(enable_loop){
-
+            vector<string> resultR;
+            auto solver = new MaxWordWithRing(headChar, tail, wordsMap, Option::C_MAX);
+            resultR = solver->handleMaxWordWithRing();
+            for(auto s:resultR){
+                cout << s << endl;
+            }
         } else {
-            set<string> wordsMap[26][26];
-            genMap(words, len, wordsMap, '\000');
             setEdge(wordsMap);
             auto solver = new C_Slover(edge, wordsMap, result, headChar, tailChar,enable_loop);
             int l = solver->solve();
