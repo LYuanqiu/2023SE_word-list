@@ -7,7 +7,7 @@
 #include "Core.h"
 
 using namespace std;
-using namespace std::filesystem;
+
 
 void a(char *s[]) {
 
@@ -97,12 +97,12 @@ int readCommand(int argc, char *argv[], char **wordsR[], int* len) {
     string strLine;
     static ios::pos_type size = fin.tellg();
     fin.seekg(0);
-    static string raw_input(size, 0);
-    if (fin.is_open()) {
 
-        fin.read(raw_input.data(), size);
+    static string raw_input(size,0);
+    if (fin.is_open()) {
+        fin.read(&raw_input[0], size);
             for (int i = 0, first = -1; i < size; i++) {
-                char &c = raw_input.data()[i];
+                char &c = raw_input[i];
                 if (c >= 'a' && c <= 'z') {
                     if (i != first) words.push_back(&c);
                     first = i + 1;
@@ -111,7 +111,6 @@ int readCommand(int argc, char *argv[], char **wordsR[], int* len) {
                     c = ::tolower(c);
                     first = i + 1;
                 } else {
-
                         c = 0;
                 }
             }
@@ -124,12 +123,28 @@ int readCommand(int argc, char *argv[], char **wordsR[], int* len) {
     return 0;
 }
 
+void outPut(char*result[], int len, string outputFileName, Option op){
+    ofstream outFile(outputFileName);
+    if(outFile.is_open()){
+        if(op == Option::N_ALL_CHAIN){
+            cout << len << endl;
+            outFile << len << endl;
+        }
+        for(int i = 0; i < len; i++){
+            cout << result[i] << endl;
+            outFile << result[i] << endl;
+        }
+    } else {
+        cerr << "Failed to open output file" << endl;
+    }
+}
+
 // option 处理文件 以及 报错
 
 
 int main(int argc, char *argv[]) {
 
-    char **words[MAX_LEN];
+    char **words[MAX_LENGTH];
     argc = 4;
     argv[0] = "exe";
     argv[1] = "-c";
@@ -137,21 +152,28 @@ int main(int argc, char *argv[]) {
     argv[3] = "./test.txt";
     int len;
     readCommand(argc, argv, words, &len);
-
-    char *results[MAX_LEN];
+    char buffer[MAX_NUM][MAX_LENGTH];
+    char *results[MAX_NUM];
+    for(int i=0;i<MAX_NUM;i++){
+        results[i] = buffer[i];
+    }
+    int ret;
     switch (option) {
         case Option::N_ALL_CHAIN:
-            Core::gen_chains_all(*words, len , results);
+            ret = Core::gen_chains_all(*words, len , results);
             break;
         case Option::W_MAX:
-            Core::gen_chain_word(*words, len, results, head, tail, reject,
+            ret = Core::gen_chain_word(*words, len, results, head, tail, reject,
                                  isRing);
             break;
         case Option::C_MAX:
-            Core::gen_chain_char(*words, len, results, head, tail, reject,
+            ret = Core::gen_chain_char(*words, len, results, head, tail, reject,
                                  isRing);
             break;
         default:
-            return 0;
+           ret = UNKNOWN_OP;
+    }
+    if(ret > 2){
+        outPut(results, ret, "solution.txt", option);
     }
 }

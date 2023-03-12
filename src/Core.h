@@ -47,6 +47,15 @@ struct Core {
         }
     }
 
+    static void convertVectorToStringArray(vector<string> &vec, char* result[]) {
+        int i = 0;
+        for(auto str : vec){
+            const char* cstr = str.c_str();
+            strcpy(result[i], cstr);
+            i++;
+        }
+    }
+
     /*
      * 求所有的单词链
      * 参数说明
@@ -87,10 +96,8 @@ struct Core {
             vector<string> resultR;
             auto solver = new MaxWordWithRing(headChar, tail, wordsMap, Option::W_MAX);
             resultR = solver->handleMaxWordWithRing();
-            for(auto s:resultR){
-                cout << s << endl;
-            }
-
+            convertVectorToStringArray(resultR, result);
+            return (int)resultR.size();
         } else {
             genMap(words, len, wordsMap, '\000');
             setEdge(wordsMap);
@@ -126,9 +133,8 @@ struct Core {
             vector<string> resultR;
             auto solver = new MaxWordWithRing(headChar, tail, wordsMap, Option::C_MAX);
             resultR = solver->handleMaxWordWithRing();
-            for(auto s:resultR){
-                cout << s << endl;
-            }
+            convertVectorToStringArray(resultR, result);
+            return (int)resultR.size();
         } else {
             setEdge(wordsMap);
             auto solver = new C_Slover(edge, wordsMap, result, headChar, tailChar,enable_loop);

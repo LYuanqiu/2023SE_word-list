@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 project(2023SE_word_list)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 14)
 
 include_directories(src)
 

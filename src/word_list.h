@@ -14,11 +14,10 @@
 #include <stack>
 #include <fstream>
 #include <algorithm>
-#include <string.h>
+#include <cstring>
 #include <cassert>
 #include <set>
 #include <sstream>
-#include <stdio.h>
 #include <filesystem>
 using namespace std;
 enum class Option {
@@ -28,22 +27,20 @@ enum class Option {
     DEFAULT
 };
 
-struct StringCmp{
-    bool operator() (const string *a, const string *b) const{
-        if (a->length() != b->length()){
-            return a->length() < b->length();
-        }
-        return a->compare(*b) < 0;
-    }
-};
+//enum class ErrorCode{
+//    SUCCESS,
+//    FILE_NOT_FOUND,
+//    UNKNOWN_OP,
+//};
 
-typedef set<string*, StringCmp> setString;
+#define UNKNOWN_OP (-1)
 
 static char tail = 0, head = 0, reject = 0;
 static bool isRing = false;
 static Option option = Option::DEFAULT;
 
-#define MAX_LEN 1000
+#define MAX_NUM 1000
+#define MAX_LENGTH 1000
 
 
 class word_list {
