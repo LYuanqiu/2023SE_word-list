@@ -5,6 +5,7 @@
 #ifndef INC_2023SE_WORD_LIST_CORE_H
 #define INC_2023SE_WORD_LIST_CORE_H
 
+#define EXPOSED_FUNCTION extern "C" _declspec(dllexport)
 
 #include "N_Slover.h"
 #include "W_Slover.h"
@@ -12,6 +13,7 @@
 #include "word_list.h"
 #include "WithRingSolver.h"
 #include "MaxWordWithRing.h"
+
 
 static int m;
 static vector<string> s;
@@ -64,6 +66,7 @@ struct Core {
      * result：单词链
      * 返回单词链的数目
      * */
+
     static int gen_chains_all(char *words[], int len, char *result[]) {
         set<string> wordsMap[26][26];
         genMap(words, len, wordsMap, '\000');
@@ -121,6 +124,7 @@ struct Core {
      * 返回单词链的长度
      *
     * */
+
     static int gen_chain_char(char *words[], int len, char *result[], char headChar, char tailChar, char rejectChar, bool enable_loop) {
         set<string> wordsMap[26][26];
         vector<string> resultRet;
@@ -141,5 +145,12 @@ struct Core {
 
     }
 };
+# ifdef _WIN32
+extern "C" {
+    __declspec(dllexport) int __stdcall gen_chains_all(char *words[], int len, char *result[]);
+    __declspec(dllexport) int __stdcall gen_chain_word(char *words[], int len, char *result[], char headChar, char tailChar, char rejectChar, bool enable_loop);
+    __declspec(dllexport) int __stdcall gen_chain_char(char *words[], int len, char *result[], char headChar, char tailChar, char rejectChar, bool enable_loop);
+}
+# endif
 
 #endif //INC_2023SE_WORD_LIST_CORE_H
