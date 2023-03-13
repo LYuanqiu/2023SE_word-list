@@ -33,7 +33,6 @@ enum class Option {
 //    UNKNOWN_OP,
 //};
 
-#define UNKNOWN_OP (-1)
 
 static char tail = 0, head = 0, reject = 0;
 static bool isRing = false;

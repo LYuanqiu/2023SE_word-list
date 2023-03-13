@@ -5,6 +5,7 @@
 // 读文件 预处理
 #include "word_list.h"
 #include "Core.h"
+#include "ExceptionHandler.h"
 
 using namespace std;
 
@@ -12,11 +13,11 @@ using namespace std;
 int isChar(char *str) {
     int length = strlen(str);
     if (length > 1) {
-        return -1; //option 报错
+        return -1;
     } else if ((str[0] >= 'A' && str[0] <= 'Z') || (str[0] >= 'a' && str[0] <= 'z')) {
         return 0;
     } else {
-        return -2; // option 报错
+        return -2;
     }
 }
 
@@ -27,50 +28,62 @@ int readCommand(int argc, char *argv[], char **wordsR[], int* len) {
             if (option == Option::DEFAULT && tail == 0 && head == 0 && !isRing) {
                 option = Option::N_ALL_CHAIN;
             } else {
-                // option  处理参数冲突
+                handleExceptionWithExit(CONFLICT_OP, "-n");
             }
         } else if (strcmp(argv[i], "-c") == 0) {
             if (option == Option::DEFAULT) {
                 option = Option::C_MAX;
             } else {
-                //
+                handleExceptionWithExit(CONFLICT_OP, "-c");
             }
         } else if (strcmp(argv[i], "-w") == 0) {
             if (option == Option::DEFAULT) {
                 option = Option::W_MAX;
             } else {
-                //
+                handleExceptionWithExit(CONFLICT_OP, "-w");
             }
         } else if (strcmp(argv[i], "-j") == 0) {
             int r;
             if (reject != 0) {
-                // 报错
+                handleExceptionWithExit(CONFLICT_OP, "-j");
             } else if ((r = isChar(argv[i + 1]) != 0)) {
-                // 根据r值报错
+                if (r == -1) {
+                    handleExceptionWithExit(J_LONG_ALPHA,argv[i+1]);
+                } else {
+                    handleExceptionWithExit(J_NO_ALPHA, "str");
+                }
             } else if (option == Option::N_ALL_CHAIN) {
-                // n冲突
+                handleExceptionWithExit(CONFLICT_OP, "-j");
             } else {
                 reject = argv[++i][0];
             }
         } else if (strcmp(argv[i], "-h") == 0) {
             int r;
             if (head != 0) {
-                //TODO: 已有h
+                handleExceptionWithExit(CONFLICT_OP, "-h");
             } else if ((r = isChar(argv[i + 1])) != 0) {
-                //TODO:
+                if (r == -1) {
+                    handleExceptionWithExit(H_LONG_ALPHA,argv[i+1]);
+                } else {
+                    handleExceptionWithExit(H_NO_ALPHA, "str");
+                }
             } else if (option == Option::N_ALL_CHAIN) {
-                // n冲突
+                handleExceptionWithExit(CONFLICT_OP, "-h");
             } else {
                 head = argv[++i][0];
             }
         } else if (strcmp(argv[i], "-t") == 0) {
             int r;
-            if (tail != 0) {
-                //TODO: 已有t
+            if (head != 0) {
+                handleExceptionWithExit(CONFLICT_OP, "-t");
             } else if ((r = isChar(argv[i + 1])) != 0) {
-                //TODO:
+                if (r == -1) {
+                    handleExceptionWithExit(T_LONG_ALPHA,argv[i+1]);
+                } else {
+                    handleExceptionWithExit(T_NO_ALPHA, "str");
+                }
             } else if (option == Option::N_ALL_CHAIN) {
-                // n冲突
+                handleExceptionWithExit(CONFLICT_OP, "-t");
             } else {
                 tail = argv[++i][0];
             }
@@ -84,36 +97,36 @@ int readCommand(int argc, char *argv[], char **wordsR[], int* len) {
         || argv[argc - 1][length - 3] != 't'
         || argv[argc - 1][length - 2] != 'x'
         || argv[argc - 1][length - 1] != 't') {
-        //TODO: 文件名错误
+        handleExceptionWithExit(NOT_TXT,argv[argc - 1]);
     }
     static vector<char *> words;
-    int cntw = 0;
     string filename = argv[argc - 1];
     ifstream fin(filename.c_str(),ios::in | ios::binary | ios::ate);
-    string strLine;
-    static ios::pos_type size = fin.tellg();
-    fin.seekg(0);
-
-    static string raw_input(size,0);
     if (fin.is_open()) {
+        static ios::pos_type size = fin.tellg();
+        static string raw_input(size,0);
+        fin.seekg(0);
         fin.read(&raw_input[0], size);
-            for (int i = 0, first = -1; i < size; i++) {
-                char &c = raw_input[i];
-                if (c >= 'a' && c <= 'z') {
-                    if (i != first) words.push_back(&c);
-                    first = i + 1;
-                } else if (c >= 'A' && c <= 'Z') {
-                    if (i != first) words.push_back(&c);
-                    c = ::tolower(c);
-                    first = i + 1;
-                } else {
-                        c = 0;
-                }
+        for (int i = 0, first = -1; i < size; i++) {
+            char &c = raw_input[i];
+            if (c >= 'a' && c <= 'z') {
+                if (i != first) words.push_back(&c);
+                first = i + 1;
+            } else if (c >= 'A' && c <= 'Z') {
+                if (i != first) words.push_back(&c);
+                c = c | (char) 0x20;
+                first = i + 1;
+            } else {
+                c = 0;
             }
+        }
+        if (words.empty()) {
+            handleExceptionWithExit(NO_WORDS, argv[argc - 1]);
+        }
     } else {
-        // TODO:报错
+        handleExceptionWithExit(OPEN_FAILED, argv[argc - 1]);
     }
-    *len = words.size();
+    *len = (int) words.size();
     *wordsR = words.data();
     fin.close();
     return 0;
@@ -141,11 +154,11 @@ void outPut(char*result[], int len, string outputFileName, Option op){
 int main(int argc, char *argv[]) {
 
     char **words[MAX_LENGTH];
-    argc = 4;
+    argc = 3;
     argv[0] = "exe";
-    argv[1] = "-c";
-    argv[2] = "-r";
-    argv[3] = "test.txt";
+    argv[1] = "-n";
+    argv[2] = "test.txt";
+
     int len;
     readCommand(argc, argv, words, &len);
     static char buffer[MAX_NUM][MAX_LENGTH];
@@ -169,7 +182,21 @@ int main(int argc, char *argv[]) {
         default:
            ret = UNKNOWN_OP;
     }
-    if(ret > 2){
-        outPut(results, ret, "solution.txt", option);
+    if(option == Option::N_ALL_CHAIN){
+        if(ret > 0){
+            outPut(results, ret, "solution.txt", option);
+        } else if (ret == -1){
+            handleExceptionWithExit(HAS_RING, " ");
+        } else {
+            handleExceptionWithExit(NO_CHAIN, " ");
+        }
+    } else {
+        if(ret >= 2){
+            outPut(results, ret, "solution.txt", option);
+        }  else if (ret == -1) {
+            handleExceptionWithExit(HAS_RING, " ");
+        } else {
+            handleExceptionWithExit(NO_CHAIN, " ");
+        }
     }
 }

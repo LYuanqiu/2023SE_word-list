@@ -9,4 +9,4 @@ add_executable(2023SE_word_list
         src/Algorithm.h
         src/Core.h
         src/word_list.cpp
-        src/word_list.h src/MaxWordWithRing.h src/WithRingSolver.h test/test.cpp test/pch.cpp test/pch.h)
+        src/word_list.h src/MaxWordWithRing.h src/WithRingSolver.h src/ExceptionHandler.h)

@@ -68,11 +68,13 @@ struct Core {
      * */
 
     static int gen_chains_all(char *words[], int len, char *result[]) {
+        vector<string> resultRet;
         set<string> wordsMap[26][26];
         genMap(words, len, wordsMap, '\000');
         setEdge(wordsMap);
-        auto solver = new N_Slover(edge, wordsMap, result);
+        auto solver = new N_Slover(edge, wordsMap, &resultRet);
         int l = solver->solve();
+        convertVectorToStringArray(resultRet, result);
         return l;
     }
 
@@ -103,8 +105,9 @@ struct Core {
         } else {
             genMap(words, len, wordsMap, '\000');
             setEdge(wordsMap);
-            auto solver = new W_Slover(edge, wordsMap, result, headChar, tailChar,enable_loop);
+            auto solver = new W_Slover(edge, wordsMap, resultRet, headChar, tailChar,enable_loop);
             int l = solver->solve();
+            convertVectorToStringArray(resultRet, result);
             return l;
         }
     }
@@ -137,8 +140,9 @@ struct Core {
             return (int)resultR.size();
         } else {
             setEdge(wordsMap);
-            auto solver = new C_Slover(edge, wordsMap, result, headChar, tailChar,enable_loop);
+            auto solver = new C_Slover(edge, wordsMap, resultRet, headChar, tailChar,enable_loop);
             int l = solver->solve();
+            convertVectorToStringArray(resultRet, result);
             return l;
         }
         return 0;

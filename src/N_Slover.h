@@ -21,19 +21,20 @@
 
 using namespace std;
 static char *ans[1000];
-
+static vector<string> result;
 class N_Slover {
 
 public:
-    N_Slover(int edge[26][26], set<string> word[26][26], char *result[]) {
+    N_Slover(int edge[26][26], set<string> word[26][26], vector<string> *r) {
         this->edge = edge;
         this->word = word;
-        this->result = result;
+        this->resultR = r;
+
     }
 
     int solve() {
         if (hasRing()) {
-            return -1; // todo 确定在-n下有环的报错
+            return -1;
         }
         for (int i = 0; i < 26; i++)
             dfs_getResult(i, 0);
@@ -44,18 +45,18 @@ public:
             for (int i = 1;i < s.size();i++) {
                 string1 = string1 + " " + s[i];
             }
-            ans[l] = (char *)string1.c_str();
-            // todo 不知道该怎么对result赋值
-            result[l] = ans[l];
+            result.push_back(string1);
             l += 1;
         }
-        return result_tmp.size();
+        *resultR = result;
+        return l;
     }
 
 private:
     set<string> (*word)[26];
     int (*edge)[26];
-    char **result;
+    vector<string> *resultR;
+
 
     /*
      * 利用深度优先遍历判断是否有环

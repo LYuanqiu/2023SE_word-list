@@ -17,12 +17,12 @@ class C_Slover {
     char tailChar;
     int (*edge)[26];
     set<string> (*word)[26];
-    char **result;
+    vector<string> result;
     int inDegree[26];
     int ringwordLength[26];
 
 public:
-    C_Slover(int edge[][26], set<string> word[26][26], char *result[], char headChar, char tailChar, bool isRing) {
+    C_Slover(int edge[][26], set<string> word[26][26], vector<string> &result, char headChar, char tailChar, bool isRing) {
         this->edge = edge;
         this->word = word;
         this->headChar = headChar;
@@ -31,6 +31,9 @@ public:
     }
 
     int solve() {
+        if (hasRing()) {
+            return -1;
+        }
         return noRingHandler();
     }
 
@@ -78,8 +81,6 @@ private:
         } else {
             getInDegree();
         }
-
-
         for (int i = 0;i < 26;i++) {
             for (int j = 0;j < 26;j++) {
                 if (edge[i][j]) {
@@ -139,17 +140,16 @@ private:
                 }
             }
         }
-        vector<string> ans;
         while (true) {
             if (edge[final][final]) {
                 for (string str: word[final][final]) {
-                    ans.push_back(str);
+                    result.push_back(str);
                     break;
                 }
             }
             if (pre[final] >= 0) {
                 for (string str: word[pre[final]][final]) {
-                    ans.push_back(str);
+                    result.push_back(str);
                     final = pre[final];
                     break;
                 }
@@ -157,8 +157,42 @@ private:
                 break;
             }
         }
-        std::reverse(ans.begin(), ans.end());
+        std::reverse(result.begin(), result.end());
         return ret;
+    }
+
+    int color[26] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+    bool flag = false;
+    void dfs(int x) {
+        if (flag)
+        {
+            return;
+        }
+        color[x] = 0;
+        for (int i = 0; i < 26; i++)
+        {
+            if (i == x || edge[x][i] == 0 || color[i] == 1) {
+                continue;
+            }
+            if (color[i]==-1)
+            {
+                dfs(i);
+            }
+            else if (color[i]==0)
+            {
+                flag = true;
+                return;
+            }
+        }
+        color[x] = 1;
+    }
+    bool hasRing() {
+        for (int i = 0;i < 26;i++) {
+            if (color[i] == -1) {
+                dfs(i);
+            }
+        }
+        return flag;
     }
 };
 
