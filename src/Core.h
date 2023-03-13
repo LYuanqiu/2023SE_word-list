@@ -4,8 +4,14 @@
 
 #ifndef INC_2023SE_WORD_LIST_CORE_H
 #define INC_2023SE_WORD_LIST_CORE_H
+#define CORE
 
+#ifdef CORE
 #define EXPOSED_FUNCTION extern "C" _declspec(dllexport)
+#else
+#define EXPOSED_FUNCTION extern "C" _declspec(dllimport)
+#endif
+
 
 #include "N_Slover.h"
 #include "W_Slover.h"
@@ -48,12 +54,25 @@ struct Core {
             }
         }
     }
+    static void my_strcpy(char* dst, const char* src, int size) {
+        while (size--) {
+            *dst = *src;
+            dst++;
+            src++;
+        }
+    }
 
     static void convertVectorToStringArray(vector<string> &vec, char* result[]) {
         int i = 0;
+        for (int j = 0; j < vec.size(); j++) {
+            result[j] = (char*)malloc(vec[j].size() + 1);
+            memset(result[i], 0, sizeof(result[i]));
+        }
         for(auto str : vec){
             const char* cstr = str.c_str();
-            strcpy(result[i], cstr);
+            //strcpy_s(result[i],sizeof(cstr),cstr);
+            my_strcpy(result[i], cstr, str.size());
+            result[i][str.size()] = '\0';
             i++;
         }
     }
@@ -149,12 +168,6 @@ struct Core {
 
     }
 };
-# ifdef _WIN32
-extern "C" {
-    __declspec(dllexport) int __stdcall gen_chains_all(char *words[], int len, char *result[]);
-    __declspec(dllexport) int __stdcall gen_chain_word(char *words[], int len, char *result[], char headChar, char tailChar, char rejectChar, bool enable_loop);
-    __declspec(dllexport) int __stdcall gen_chain_char(char *words[], int len, char *result[], char headChar, char tailChar, char rejectChar, bool enable_loop);
-}
-# endif
+
 
 #endif //INC_2023SE_WORD_LIST_CORE_H

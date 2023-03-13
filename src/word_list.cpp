@@ -74,7 +74,7 @@ int readCommand(int argc, char *argv[], char **wordsR[], int* len) {
             }
         } else if (strcmp(argv[i], "-t") == 0) {
             int r;
-            if (head != 0) {
+            if (tail != 0) {
                 handleExceptionWithExit(CONFLICT_OP, "-t");
             } else if ((r = isChar(argv[i + 1])) != 0) {
                 if (r == -1) {
@@ -154,10 +154,14 @@ void outPut(char*result[], int len, string outputFileName, Option op){
 int main(int argc, char *argv[]) {
 
     char **words[MAX_LENGTH];
-    argc = 3;
+    argc = 7;
     argv[0] = "exe";
-    argv[1] = "-c";
-    argv[2] = "test.txt";
+    argv[1] = "-w";
+    argv[2] = "-h";
+    argv[3] = "z";
+    argv[4] = "-t";
+    argv[5] = "v";
+    argv[6] = "test.txt";
 
     int len;
     readCommand(argc, argv, words, &len);
@@ -200,3 +204,22 @@ int main(int argc, char *argv[]) {
         }
     }
 }
+
+# ifdef _WIN32
+extern "C" {
+    __declspec(dllexport) int __stdcall gen_chains_all(char* words[], int len, char* result[]);
+    __declspec(dllexport) int __stdcall gen_chain_word(char* words[], int len, char* result[], char headChar, char tailChar, char rejectChar, bool enable_loop);
+    __declspec(dllexport) int __stdcall gen_chain_char(char* words[], int len, char* result[], char headChar, char tailChar, char rejectChar, bool enable_loop);
+}
+
+__declspec(dllexport) int __stdcall gen_chains_all(char* words[], int len, char* result[]) {
+    return Core::gen_chains_all(words, len, result);
+}
+__declspec(dllexport) int __stdcall gen_chain_word(char* words[], int len, char* result[], char headChar, char tailChar, char rejectChar, bool enable_loop) {
+    return Core::gen_chain_word(words, len, result, headChar, tailChar, rejectChar, enable_loop);
+}
+__declspec(dllexport) int __stdcall gen_chain_char(char* words[], int len, char* result[], char headChar, char tailChar, char rejectChar, bool enable_loop) {
+    return Core::gen_chain_char(words, len, result, headChar, tailChar, rejectChar, enable_loop);
+}
+
+# endif
