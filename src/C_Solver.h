@@ -17,17 +17,18 @@ class C_Slover {
     char tailChar;
     int (*edge)[26];
     set<string> (*word)[26];
+    vector<string> *resultR;
     vector<string> result;
     int inDegree[26];
     int ringwordLength[26];
 
 public:
-    C_Slover(int edge[][26], set<string> word[26][26], vector<string> &result, char headChar, char tailChar, bool isRing) {
+    C_Slover(int edge[][26], set<string> word[26][26], vector<string> *r, char headChar, char tailChar, bool isRing) {
         this->edge = edge;
         this->word = word;
         this->headChar = headChar;
         this->tailChar = tailChar;
-        this->result = result;
+        this->resultR = r;
     }
 
     int solve() {
@@ -158,6 +159,7 @@ private:
             }
         }
         std::reverse(result.begin(), result.end());
+        *resultR = this->result;
         return ret;
     }
 

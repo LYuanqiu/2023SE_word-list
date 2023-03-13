@@ -156,7 +156,7 @@ int main(int argc, char *argv[]) {
     char **words[MAX_LENGTH];
     argc = 3;
     argv[0] = "exe";
-    argv[1] = "-n";
+    argv[1] = "-c";
     argv[2] = "test.txt";
 
     int len;
