@@ -100,14 +100,14 @@ private:
      */
     set<vector<string>> result_tmp;
     vector<string> pre;
-    bool sameTag = false;
+    bool sameTag = true;
     void dfs_getResult(int x, int len) {
         for (int i = 0; i < 26;i++) {
             if ((i != x || sameTag) && edge[x][i]) {
                 if (i == x) {
-                    sameTag = true;
-                } else {
                     sameTag = false;
+                } else {
+                    sameTag = true;
                 }
                 vector<string> tmp;
                 tmp.assign(word[x][i].begin(),word[x][i].end());
