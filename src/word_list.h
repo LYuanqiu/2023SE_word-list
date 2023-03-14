@@ -39,7 +39,7 @@ static bool isRing = false;
 static Option option = Option::DEFAULT;
 
 #define MAX_NUM 1000
-#define MAX_LENGTH 1000
+#define MAX_LENGTH 20000
 
 
 class word_list {
