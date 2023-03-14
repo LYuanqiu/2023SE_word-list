@@ -160,7 +160,7 @@ private:
         }
         std::reverse(result.begin(), result.end());
         *resultR = this->result;
-        return ret;
+        return (int)this->result.size();
     }
 
     int color[26] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};

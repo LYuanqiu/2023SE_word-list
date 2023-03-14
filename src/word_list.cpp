@@ -89,6 +89,9 @@ int readCommand(int argc, char *argv[], char **wordsR[], int* len) {
             }
         } else if (strcmp(argv[i], "-r") == 0) {
             int r;
+            if (option == Option::N_ALL_CHAIN) {
+                handleExceptionWithExit(CONFLICT_OP, "-r");
+            }
             isRing = true;
         }
     }
@@ -154,14 +157,11 @@ void outPut(char*result[], int len, string outputFileName, Option op){
 int main(int argc, char *argv[]) {
 
     char **words[MAX_LENGTH];
-    argc = 7;
+    argc = 4;
     argv[0] = "exe";
     argv[1] = "-w";
-    argv[2] = "-h";
-    argv[3] = "z";
-    argv[4] = "-t";
-    argv[5] = "v";
-    argv[6] = "test.txt";
+    argv[2] = "-r";
+    argv[3] = "test.txt";
 
     int len;
     readCommand(argc, argv, words, &len);

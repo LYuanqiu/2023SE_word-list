@@ -38,7 +38,7 @@ static char tail = 0, head = 0, reject = 0;
 static bool isRing = false;
 static Option option = Option::DEFAULT;
 
-#define MAX_NUM 1000
+#define MAX_NUM 10000
 #define MAX_LENGTH 20000
 
 

@@ -72,6 +72,9 @@ private:
         for (int i = 0; i < 26; i++)
         {
             if (i == x || edge[x][i] == 0 || color[i] == 1) {
+                if (i == x && edge[x][i] > 1) {
+                    flag = true;
+                }
                 continue;
             }
             if (color[i]==-1)

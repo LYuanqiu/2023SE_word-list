@@ -39,7 +39,7 @@ struct Core {
 
     static void genMap(char *words[], int len, set<string> wordMap[26][26], char rejectChar) {
         init_words(words,len);
-        for (int i = 0; i < len; i++) {
+        for (int i = 0; i < m; i++) {
             if (s[i][0] == rejectChar) {
                 continue;
             } else {
@@ -122,7 +122,6 @@ struct Core {
             convertVectorToStringArray(resultR, result);
             return (int)resultR.size();
         } else {
-            genMap(words, len, wordsMap, '\000');
             setEdge(wordsMap);
             auto solver = new W_Slover(edge, wordsMap, &resultRet, headChar, tailChar,enable_loop);
             int l = solver->solve();
