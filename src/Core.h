@@ -31,7 +31,7 @@ struct Core {
         s.clear();
         for(int i = 0;i < len;i++){
             string S = words[i];
-            if(S.length() == 1) continue;
+            //if(S.length() == 1) continue;
             s.push_back(S);
         }
         m = (int)s.size();
@@ -117,7 +117,7 @@ struct Core {
         genMap(words, len, wordsMap, rejectChar);
         if(enable_loop){
             vector<string> resultR;
-            auto solver = new MaxWordWithRing(headChar, tail, wordsMap, Option::W_MAX);
+            auto solver = new MaxWordWithRing(headChar, tailChar, wordsMap, Option::W_MAX);
             resultR = solver->handleMaxWordWithRing();
             convertVectorToStringArray(resultR, result);
             return (int)resultR.size();
@@ -152,7 +152,7 @@ struct Core {
         genMap(words, len, wordsMap, rejectChar);
         if(enable_loop){
             vector<string> resultR;
-            auto solver = new MaxWordWithRing(headChar, tail, wordsMap, Option::C_MAX);
+            auto solver = new MaxWordWithRing(headChar, tailChar, wordsMap, Option::C_MAX);
             resultR = solver->handleMaxWordWithRing();
             convertVectorToStringArray(resultR, result);
             return (int)resultR.size();

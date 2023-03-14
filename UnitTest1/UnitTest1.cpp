@@ -91,7 +91,7 @@ namespace UnitTest1
             test_word(words, 13, ans, 4, 0, 0, 'a', false);
         }
 
-        /*
+        
  
         //W ring 
         TEST_METHOD(test_w_r_r) {
@@ -125,7 +125,6 @@ namespace UnitTest1
             test_word(words, 5, ans, 2, 0, 0, 'e', true);
         }
 
-        */
         //C no ring
         TEST_METHOD(test_c) {
             char* words[] = { "algebra", "app", "cool", "element", "ur", "fox", "dog", "cat", "leaf", "trick", "paaaaaaaaaaaaaaaaaaam" };
@@ -153,42 +152,43 @@ namespace UnitTest1
             test_char(words, 11, ans, 2, 0, 0, 'p', false);
         }
         
-        /*
+        
         //C ring
         TEST_METHOD(test_c_r) {
             char* words[] = { "element", "heaven", "table", "teach", "talkkkkkkkkkkkkkkkkk", "kaaaaaaa"};
-            const char* ans[] = {""};
+            const char* ans[] = { "table","element", "talkkkkkkkkkkkkkkkkk", "kaaaaaaa" };
             test_char(words, 6, ans, 4, 0, 0, 0, true);
         }
 
 
         TEST_METHOD(test_c_r_h) {
             char* words[] = { "element", "heaven", "table", "teach", "talkkkkkkkkkkkkkkkkk", "kaaaaaaa" };
-            const char* ans[] = { "" };
-            test_char(words, 6, ans, 4, 0, 0, 0, true);
+            const char* ans[] = { "element", "talkkkkkkkkkkkkkkkkk", "kaaaaaaa" };
+            test_char(words, 6, ans, 3, 'e', 0, 0, true);
         }
 
 
         TEST_METHOD(test_c_r_t) {
             char* words[] = { "element", "heaven", "table", "teach", "talkkkkkkkkkkkkkkkkk", "kaaaaaaa" };
-            const char* ans[] = { "" };
-            test_char(words, 6, ans, 4, 0, 0, 0, true);
+            const char* ans[] = { "table","element", "talkkkkkkkkkkkkkkkkk" };
+            test_char(words, 6, ans, 3, 0, 'k', 0, true);
         }
 
 
         TEST_METHOD(test_c_r_ht) {
             char* words[] = { "element", "heaven", "table", "teach", "talkkkkkkkkkkkkkkkkk", "kaaaaaaa" };
-            const char* ans[] = { "" };
-            test_char(words, 6, ans, 4, 0, 0, 0, true);
+            const char* ans[] = { "element", "talkkkkkkkkkkkkkkkkk" };
+            test_char(words, 6, ans, 2, 'e', 'k', 0, true);
         }
 
 
         TEST_METHOD(test_c_r_j) {
             char* words[] = { "element", "heaven", "table", "teach", "talkkkkkkkkkkkkkkkkk", "kaaaaaaa" };
-            const char* ans[] = { "" };
-            test_char(words, 6, ans, 4, 0, 0, 0, true);
+            const char* ans[] = { "talkkkkkkkkkkkkkkkkk", "kaaaaaaa" };
+            test_char(words, 6, ans, 2, 0, 0, 'e', true);
         }
-        */
+
+        
 
         //N
         TEST_METHOD(test_n) {

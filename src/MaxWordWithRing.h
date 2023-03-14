@@ -59,14 +59,13 @@ private:
     }
 
     void getEdgeNum(vector<vector<vector<string>>> &words_, vector<vector<int>> &edgeNum_, Option option) {
-        //vector<vector<int>> edgeNum(ALPHA_NUM, vector<int>(ALPHA_NUM));
         FOR_ALPHA(i) {
             FOR_ALPHA(j) {
                 edgeNum_[i][j] = (int) words_[i][j].size();
-                for(auto s : words_[i][j]){
-                    if(option == Option::W_MAX){
+                for (auto s: words_[i][j]) {
+                    if (option == Option::W_MAX) {
                         weights[i][j].push_back(1);
-                    }else{
+                    } else {
                         weights[i][j].push_back(s.length());
                     }
                 }
@@ -82,12 +81,15 @@ private:
                         && !edgeNum_[i][i]
                         && !outDegree[j]
                         && !edgeNum_[j][j]
-                        || edgeNum_[i][j] == 1
-                           && !inDegree[i]
-                           && outDegree[j]) {
+                            ) {
                         edgeNum_[i][j] = 0;
                         words_[i][j].clear();
                     }
+                } else if (edgeNum_[i][j] == 1
+                           && !inDegree[i]
+                           && outDegree[j]) {
+                    edgeNum_[i][j] = 0;
+                    words_[i][j].clear();
                 }
                 //cout << edgeNum[i][j] << endl;
             }
@@ -126,7 +128,7 @@ private:
     void get_scc() {
         memset(visited, false, sizeof(visited));
         FOR_ALPHA(i) {
-            if (!visited[i]) dfs_scc(i);
+            if (dfn[i] == 0) dfs_scc(i);
         }
         FOR_ALPHA(i) {
             FOR_ALPHA(j) {
@@ -145,7 +147,7 @@ private:
         }
     }
 
-    vector<bool> findReachableAlphaStart(int start, set<string> words_[26][26], vector<bool> reachable) {
+    vector<bool> findReachableAlphaStart(int start, set<string> words_[26][26], vector<bool> &reachable) {
         vector<bool> visited_bfs(ALPHA_NUM, false);
         queue<int> q;
         q.push(start);
@@ -154,7 +156,7 @@ private:
             int now = q.front();
             q.pop();
             FOR_ALPHA(i) {
-                if (words_[now][i].size() > 0 && !visited[i] && reachable[i]) {
+                if (words_[now][i].size() > 0 && !visited_bfs[i] && reachable[i]) {
                     q.push(i);
                     visited_bfs[i] = true;
                 }
@@ -163,7 +165,7 @@ private:
         return visited_bfs;
     }
 
-    vector<bool> findReachableAlphaEnd(int end, set<string> words_[26][26], vector<bool> reachable) {
+    vector<bool> findReachableAlphaEnd(int end, set<string> words_[26][26], vector<bool> &reachable) {
         vector<bool> visited_bfs(ALPHA_NUM, false);
         queue<int> q;
         q.push(end);
@@ -172,7 +174,7 @@ private:
             int now = q.front();
             q.pop();
             FOR_ALPHA(i) {
-                if (words_[i][end].size() > 0 && !visited[i] && reachable[i]) {
+                if (words_[i][now].size() > 0 && !visited_bfs[i] && reachable[i]) {
                     q.push(i);
                     visited_bfs[i] = true;
                 }
@@ -274,21 +276,28 @@ public:
         memset(ins, false, sizeof(ins));
         memset(alpha2scc, 0, sizeof(alpha2scc));
         memset(maxWeight, 0, sizeof(maxWeight));
+        memset(route, 0, sizeof(route));
     }
 
     vector<string> handleMaxWordWithRing() {
 
         get_scc();
         vector<set<int>> sccInFromStart(26, set<int>());
-
-        FOR_ALPHA(i) {
-            if (sccInDegree[alpha2scc[i]] == 0) {
-                bfsFormStart(i, sccInFromStart);
+        if (headChar) {
+            bfsFormStart(headChar - 'a', sccInFromStart);
+        } else {
+            FOR_ALPHA(i) {
+                if (sccInDegree[alpha2scc[i]] == 0) {
+                    bfsFormStart(i, sccInFromStart);
+                }
             }
         }
+        memset(maxWeight, -10000, sizeof (maxWeight));
+
         for (int i = 0; i < scc_tot; i++) {
             for (auto &j: sccInFromStart[i]) {
                 memset(used, 0, sizeof(used));
+                maxWeight[j][j] = 0;
                 dfs_word(j, j, 0, 0);
             }
         }
@@ -322,9 +331,9 @@ public:
                 if (sccEdge[front][i]) {
                     for (auto &j: sccs[front]) {
                         for (auto &k: sccs[i]) {
-                            if (edgeNum[j][k] && maxOutWeight[j] + 1 > maxInWeight[k] &&
+                            if (edgeNum[j][k] && maxOutWeight[j] + weights[j][k].back() > maxInWeight[k] &&
                                 (maxOutWeight[j] > 0 || outDegree[k] || edgeNum[k][k])) {
-                                maxInWeight[k] = maxOutWeight[j] + 1;
+                                maxInWeight[k] = maxOutWeight[j] + weights[j][k].back();
                                 outerLast[k] = j;
                             }
                         }
@@ -338,11 +347,16 @@ public:
 
         }
         int final = -1, ret;
-        ret = 0;
-        FOR_ALPHA(i) {
-            if (maxOutWeight[i] > ret) {
-                ret = maxOutWeight[i];
-                final = i;
+        if (tailChar) {
+            final = tailChar - 'a';
+            ret = maxOutWeight[tailChar - 'a'];
+        } else {
+            ret = 0;
+            FOR_ALPHA(i) {
+                if (maxOutWeight[i] > ret) {
+                    ret = maxOutWeight[i];
+                    final = i;
+                }
             }
         }
 
@@ -353,7 +367,7 @@ public:
             final = outerLast[innerLast[final]];
         }
         vector<string> resultR;
-        while (true) {
+        while (!stk.empty()) {
             int entrance = stk.top();
             stk.pop();
             int exit = stk.top();
@@ -369,6 +383,7 @@ public:
             resultR.push_back(words[exit][stk.top()].back());
             words[exit][stk.top()].pop_back();
         }
+        
         return resultR;
     }
 };

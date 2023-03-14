@@ -157,11 +157,15 @@ void outPut(char*result[], int len, string outputFileName, Option op){
 int main(int argc, char *argv[]) {
 
     char **words[MAX_LENGTH];
-    argc = 4;
+    argc = 8;
     argv[0] = "exe";
-    argv[1] = "-w";
+    argv[1] = "-c";
     argv[2] = "-r";
-    argv[3] = "test.txt";
+    argv[3] = "-h";
+    argv[4] = "e";
+    argv[5] = "-t";
+    argv[6] = "k";
+    argv[7] = "test.txt";
 
     int len;
     readCommand(argc, argv, words, &len);
