@@ -21,7 +21,7 @@ int isChar(char *str) {
     }
 }
 
-int readCommand(int argc, char *argv[], char **wordsR[], int *len, char* errMessage) {
+int readCommand(int argc, char *argv[], char **wordsR[], int *len, char *errMessage) {
     for (int i = 1; i < argc - 1; i++) {
         //if (argv[i] == "-n") {
         if (strcmp(argv[i], "-n") == 0) {
@@ -110,6 +110,8 @@ int readCommand(int argc, char *argv[], char **wordsR[], int *len, char* errMess
                 return CONFLICT_OP;
             }
             isRing = true;
+        } else {
+            handleExceptionWithExit(UNKNOWN_OP, argv[i]);
         }
     }
     int length = (int) strlen(argv[argc - 1]);
@@ -178,7 +180,7 @@ int main_serve(int argc, char *argv[]) {
     int len;
     int readRet;
     readRet = readCommand(argc, argv, words, &len, errMessage);
-    if(readRet < 0){
+    if (readRet < 0) {
         cerr << errMessage << endl;
         return readRet;
     }
@@ -188,6 +190,7 @@ int main_serve(int argc, char *argv[]) {
         results[i] = buffer[i];
     }
     int ret;
+
     try {
         switch (option) {
             case Option::N_ALL_CHAIN:
@@ -202,7 +205,8 @@ int main_serve(int argc, char *argv[]) {
                                            isRing);
                 break;
             default:
-                ret = UNKNOWN_OP;
+                cerr << handleException(LACK_COMMAND, "") << endl;
+                return LACK_COMMAND;
         }
     } catch (runtime_error const &e) {
         throw e;
@@ -227,7 +231,7 @@ int main(int argc, char *argv[]) {
 
     try {
         main_serve(argc, argv);
-    } catch (runtime_error const &e){
+    } catch (runtime_error const &e) {
         cerr << "Invalid input: " << e.what() << endl;
     }
     return 0;
