@@ -11,7 +11,7 @@
 #else
 #define EXPOSED_FUNCTION extern "C" _declspec(dllimport)
 #endif
-
+#define CORE_HAS_RING -1
 
 #include "N_Slover.h"
 #include "W_Slover.h"
@@ -19,6 +19,7 @@
 #include "word_list.h"
 #include "WithRingSolver.h"
 #include "MaxWordWithRing.h"
+
 
 
 static int m;
@@ -93,6 +94,11 @@ struct Core {
         setEdge(wordsMap);
         auto solver = new N_Slover(edge, wordsMap, &resultRet);
         int l = solver->solve();
+        if(l == CORE_HAS_RING){
+            throw runtime_error("There are rings in the file!");
+        } else if(l <=0 ){
+            throw runtime_error("There is no chain in the file!");
+        }
         convertVectorToStringArray(resultRet, result);
         return l;
     }
@@ -119,12 +125,20 @@ struct Core {
             vector<string> resultR;
             auto solver = new MaxWordWithRing(headChar, tailChar, wordsMap, Option::W_MAX);
             resultR = solver->handleMaxWordWithRing();
+            if(resultR.size() < 2  ){
+                throw runtime_error("There is no chain in the file!");
+            }
             convertVectorToStringArray(resultR, result);
             return (int)resultR.size();
         } else {
             setEdge(wordsMap);
             auto solver = new W_Slover(edge, wordsMap, &resultRet, headChar, tailChar,enable_loop);
             int l = solver->solve();
+            if(l == CORE_HAS_RING){
+                throw runtime_error("There are rings in the file!");
+            } else if(l < 2 ){
+                throw runtime_error("There is no chain in the file!");
+            }
             convertVectorToStringArray(resultRet, result);
             return l;
         }
@@ -154,16 +168,23 @@ struct Core {
             vector<string> resultR;
             auto solver = new MaxWordWithRing(headChar, tailChar, wordsMap, Option::C_MAX);
             resultR = solver->handleMaxWordWithRing();
+            if(resultR.size() < 2){
+                throw runtime_error("There is no chain in the file!");
+            }
             convertVectorToStringArray(resultR, result);
             return (int)resultR.size();
         } else {
             setEdge(wordsMap);
             auto solver = new C_Slover(edge, wordsMap, &resultRet, headChar, tailChar,enable_loop);
             int l = solver->solve();
+            if(l == CORE_HAS_RING){
+                throw runtime_error("There are rings in the file!");
+            } else if(l < 2){
+                throw runtime_error("There is no chain in the file!");
+            }
             convertVectorToStringArray(resultRet, result);
             return l;
         }
-        return 0;
 
     }
 };
