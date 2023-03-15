@@ -93,6 +93,8 @@ int readCommand(int argc, char *argv[], char **wordsR[], int* len) {
                 handleExceptionWithExit(CONFLICT_OP, "-r");
             }
             isRing = true;
+        } else {
+            handleExceptionWithExit(UNKNOWN_OP, argv[i]);
         }
     }
     int length = (int) strlen(argv[argc - 1]);
@@ -188,7 +190,7 @@ int main(int argc, char *argv[]) {
                                  isRing);
             break;
         default:
-           ret = UNKNOWN_OP;
+            handleExceptionWithExit(LACK_COMMAND,"");
     }
     if(option == Option::N_ALL_CHAIN){
         if(ret > 0){

@@ -23,7 +23,7 @@
 #define MISSING_ARG (-16)
 #define NO_CHAIN (-17)
 #define HAS_RING (-18)
-
+#define LACK_COMMAND (-19)
 
 char* handleException(int error, const char* arg){
     static string errMessage;
@@ -82,6 +82,8 @@ char* handleException(int error, const char* arg){
         case HAS_RING:
             errMessage = "There are rings in the file!";
             break;
+        case LACK_COMMAND:
+            errMessage = "Lack functional Command!";
         default:
             errMessage =  "Unexpected error!" ;
             break;
