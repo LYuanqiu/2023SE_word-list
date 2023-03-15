@@ -38,7 +38,7 @@ char* handleException(int error, const char* arg){
             errMessage =  "Can not find " + (string)arg + "!";
             break;
         case NOT_TXT:
-            errMessage =  (string)arg + " not a txt file!";
+            errMessage =  (string)arg + " not a txt file, or you may missing some arguments!";
             break;
         case OPEN_FAILED:
             errMessage =  "Failed to open " + (string)arg  +"!";

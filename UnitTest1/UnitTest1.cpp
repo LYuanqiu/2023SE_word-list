@@ -197,6 +197,15 @@ namespace UnitTest1
             test_all(words, 4, ans, 6);
         }
         //Exception:has ring
+        
         //Exception:no chain
+
+        /*参数过少*/
+
+        TEST_METHOD(lack_arguments) {
+            char* args[] = { "word-list.exe" };
+            int ret =main_serve(1, args);
+            Assert::AreEqual(NOT_TXT, ret);
+        }
 	};
 }
