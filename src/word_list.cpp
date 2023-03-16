@@ -10,13 +10,19 @@
 
 
 using namespace std;
-
+#define INPUT
 #ifdef INPUT
 #include <libloaderapi.h>
-#pragma comment(lib, "DllTest.lib")                                     // 告诉程序lib文件的路径，这里就表示当前目录
-extern "C" __declspec(dllimport) int __stdcall add(int a, int b);       // 这里使用__declspec(dllimport)，正好和生成dll时的__declspec(dllexport)对应
-extern "C" __declspec(dllimport) int __stdcall subtruct(int a, int b);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
+__declspec(dllimport) int __stdcall gen_chains_all(int a, int b);
+__declspec(dllimport) int __stdcall subtruct(int a, int b);
+
+#ifdef __cplusplus
+}
+#endif
 
 // 动态调用DLL库
 int DynamicUseN(char *words[], int len, char *result[])
@@ -34,6 +40,40 @@ int DynamicUseN(char *words[], int len, char *result[])
     N = (gen_chains_all)GetProcAddress(module, "gen_chains_all");
 
     int sum  = N(words, len, result);
+    return sum;
+}
+
+int DynamicUseW(char *words[], int len, char *result[], char headChar, char tailChar, char rejectChar, bool enable_loop) {
+    // 运行时加载DLL库
+    HMODULE module = LoadLibrary("core_changed.dll");
+    if (module == NULL)
+    {
+        printf("加载DLLTest1.dll动态库失败\n");
+        return 0;
+    }
+    typedef int (*gen_chain_word)(char *words[], int len, char *result[], char headChar, char tailChar, char rejectChar, bool enable_loop); // 定义函数指针类型
+    gen_chain_word W;
+    // 导出函数地址
+    W = (gen_chain_word)GetProcAddress(module, "gen_chain_word");
+
+    int sum  = W(words, len, result, headChar, tailChar, rejectChar, enable_loop);
+    return sum;
+}
+
+int DynamicUseC(char *words[], int len, char *result[], char headChar, char tailChar, char rejectChar, bool enable_loop) {
+    // 运行时加载DLL库
+    HMODULE module = LoadLibrary("core_changed.dll");
+    if (module == NULL)
+    {
+        printf("加载DLLTest1.dll动态库失败\n");
+        return 0;
+    }
+    typedef int (*gen_chain_char)(char *words[], int len, char *result[], char headChar, char tailChar, char rejectChar, bool enable_loop); // 定义函数指针类型
+    gen_chain_char C;
+    // 导出函数地址
+    C = (gen_chain_char)GetProcAddress(module, "gen_chain_char");
+
+    int sum  = C(words, len, result, headChar, tailChar, rejectChar, enable_loop);
     return sum;
 }
 #endif // INPUT
@@ -238,16 +278,30 @@ int main_serve(int argc, char *argv[]) {
     try {
         switch (option) {
             case Option::N_ALL_CHAIN:
-                //ret = DynamicUseN(*words, len, results);
+                #ifdef INPUT
+                ret = DynamicUseN(*words, len, results);
+                #else
                 ret = Core::gen_chains_all(*words, len, results);
+                #endif
                 break;
             case Option::W_MAX:
+                #ifdef INPUT
+                ret = DynamicUseW(*words, len, results, head, tail, reject,
+                                  isRing);
+                #else
                 ret = Core::gen_chain_word(*words, len, results, head, tail, reject,
                                            isRing);
+                #endif
                 break;
             case Option::C_MAX:
+                #ifdef INPUT
+                ret = DynamicUseC(*words, len, results, head, tail, reject,
+                                  isRing);
+                #else
                 ret = Core::gen_chain_char(*words, len, results, head, tail, reject,
                                            isRing);
+                #endif
+
                 break;
             default:
                 cerr << handleException(LACK_COMMAND, "") << endl;
@@ -261,14 +315,7 @@ int main_serve(int argc, char *argv[]) {
 }
 
 int main(int argc, char *argv[]) {
-
-//    argv[2] = "-r";
-//    argv[3] = "-h";
-//    argv[4] = "e";
-//    argv[5] = "-t";
-//    argv[6] = "k"
-
-    try {
+        try {
         main_serve(argc, argv);
     } catch (runtime_error const &e) {
         cerr << "Invalid input: " << e.what() << endl;
