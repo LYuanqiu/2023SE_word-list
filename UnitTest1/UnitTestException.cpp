@@ -12,7 +12,72 @@ namespace UnitTestException
 	{
 	public:
 
-        TEST_METHOD(lack_arguments) {
+
+        TEST_METHOD(unkonwn_option) {
+            char* args[] = { "word-list.exe", "-m", "test.txt"};
+            int ret =main_serve(3, args);
+            Assert::AreEqual(UNKNOW_OP, ret);
+        }
+
+        TEST_METHOD(conflict_option) {
+            char* args[] = { "word-list.exe", "-n", "-c", "test.txt"};
+            int ret =main_serve(4, args);
+            Assert::AreEqual(CONFLICT_OP, ret);
+        }
+
+        TEST_METHOD(conflict_option) {
+            char* args[] = { "word-list.exe", "-n", "-c", "test.txt"};
+            int ret =main_serve(4, args);
+            Assert::AreEqual(CONFLICT_OP, ret);
+        }
+
+        TEST_METHOD(no_such_file) {
+            char* args[] = { "word-list.exe", "-n", "no.txt"};
+            int ret =main_serve(3, args);
+            Assert::AreEqual(NO_SUCH_FILE, ret);
+        }
+
+        // todo 不知道怎么打不开文件
+        TEST_METHOD(open_failed_file) {
+            char* args[] = { "word-list.exe", "-n", "unopen.txt"};
+            int ret =main_serve(3, args);
+            Assert::AreEqual(OPEN_FAILED, ret);
+        }
+
+        TEST_METHOD(no_words_file) {
+            char* args[] = { "word-list.exe", "-n", "no_words.txt"};
+            int ret =main_serve(3, args);
+            Assert::AreEqual(NO_WORDS, ret);
+        }
+
+        // todo 不知道怎么fail_output
+        TEST_METHOD(fail_output_file) {
+            char* args[] = { "word-list.exe", "-n", "test.txt"};
+            int ret =main_serve(3, args);
+            Assert::AreEqual(NO_WORDS, ret);
+        }
+
+        TEST_METHOD(missing_filename) {
+            char* args[] = { "word-list.exe", "-n"};
+            int ret =main_serve(2, args);
+            Assert::AreEqual(MISSING_FILE, ret);
+        }
+
+        TEST_METHOD(h_no_alpha) {
+            char* args[] = { "word-list.exe", "-h", "test.txt"};
+            int ret =main_serve(3, args);
+            Assert::AreEqual(H_NO_ALPHA , ret);
+        }
+
+        TEST_METHOD(t_no_alpha) {
+            char* args[] = { "word-list.exe", "-t", "test.txt"};
+            int ret =main_serve(3, args);
+            Assert::AreEqual(T_NO_ALPHA , ret);
+        }
+
+
+
+    TEST_METHOD(lack_arguments) {
             char* args[] = { "word-list.exe" };
             int ret =main_serve(1, args);
             Assert::AreEqual(NOT_TXT, ret);

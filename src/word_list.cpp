@@ -3,11 +3,36 @@
 //
 
 // 读文件 预处理
+#include <libloaderapi.h>
 #include "word_list.h"
 #include "Core.h"
 #include "ExceptionHandler.h"
 
 using namespace std;
+
+#pragma comment(lib, "DllTest.lib")                                     // 告诉程序lib文件的路径，这里就表示当前目录
+extern "C" __declspec(dllimport) int __stdcall add(int a, int b);       // 这里使用__declspec(dllimport)，正好和生成dll时的__declspec(dllexport)对应
+extern "C" __declspec(dllimport) int __stdcall subtruct(int a, int b);
+
+
+// 动态调用DLL库
+int DynamicUseN(char *words[], int len, char *result[])
+{
+    // 运行时加载DLL库
+    HMODULE module = LoadLibrary("core_changed.dll");
+    if (module == NULL)
+    {
+        printf("加载DLLTest1.dll动态库失败\n");
+        return 0;
+    }
+    typedef int (*gen_chains_all)(char **, int , char **); // 定义函数指针类型
+    gen_chains_all N;
+    // 导出函数地址
+    N = (gen_chains_all)GetProcAddress(module, "gen_chains_all");
+
+    int sum  = N(words, len, result);
+    return sum;
+}
 
 
 int isChar(char *str) {
@@ -179,6 +204,10 @@ void outPut(char *result[], int len, string outputFileName, Option op) {
 int main_serve(int argc, char *argv[]) {
     char **words[MAX_LENGTH];
     char errMessage[MAX_LENGTH];
+//    argc = 3;
+//    argv[0] = "exe";
+//    argv[1] = "-n";
+//    argv[2] = "test.txt";
     int len;
     int readRet;
     readRet = readCommand(argc, argv, words, &len, errMessage);
@@ -196,7 +225,8 @@ int main_serve(int argc, char *argv[]) {
     try {
         switch (option) {
             case Option::N_ALL_CHAIN:
-                ret = Core::gen_chains_all(*words, len, results);
+                ret = DynamicUseN(*words, len, results);
+                //ret = Core::gen_chains_all(*words, len, results);
                 break;
             case Option::W_MAX:
                 ret = Core::gen_chain_word(*words, len, results, head, tail, reject,
@@ -219,17 +249,11 @@ int main_serve(int argc, char *argv[]) {
 
 int main(int argc, char *argv[]) {
 
-
-    argc = 4;
-    argv[0] = "exe";
-    argv[1] = "-n";
-    argv[2] = "-n";
 //    argv[2] = "-r";
 //    argv[3] = "-h";
 //    argv[4] = "e";
 //    argv[5] = "-t";
-//    argv[6] = "k";
-    argv[3] = "test.txt";
+//    argv[6] = "k"
 
     try {
         main_serve(argc, argv);
@@ -238,30 +262,3 @@ int main(int argc, char *argv[]) {
     }
     return 0;
 }
-
-# ifdef _WIN32
-extern "C" {
-__declspec(dllexport) int __stdcall gen_chains_all(char *words[], int len, char *result[]);
-__declspec(dllexport) int __stdcall
-gen_chain_word(char *words[], int len, char *result[], char headChar, char tailChar, char rejectChar, bool enable_loop);
-__declspec(dllexport) int __stdcall
-gen_chain_char(char *words[], int len, char *result[], char headChar, char tailChar, char rejectChar, bool enable_loop);
-}
-
-__declspec(dllexport) int __stdcall gen_chains_all(char *words[], int len, char *result[]) {
-    return Core::gen_chains_all(words, len, result);
-}
-
-__declspec(dllexport) int __stdcall
-gen_chain_word(char *words[], int len, char *result[], char headChar, char tailChar, char rejectChar,
-               bool enable_loop) {
-    return Core::gen_chain_word(words, len, result, headChar, tailChar, rejectChar, enable_loop);
-}
-
-__declspec(dllexport) int __stdcall
-gen_chain_char(char *words[], int len, char *result[], char headChar, char tailChar, char rejectChar,
-               bool enable_loop) {
-    return Core::gen_chain_char(words, len, result, headChar, tailChar, rejectChar, enable_loop);
-}
-
-# endif
