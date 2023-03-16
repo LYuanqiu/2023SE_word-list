@@ -66,6 +66,9 @@ struct Core {
     static void convertVectorToStringArray(vector<string> &vec, char* result[]) {
         int i = 0;
         for (int j = 0; j < vec.size(); j++) {
+            if(vec[j].size() > MAX_LENGTH){
+                throw runtime_error("result too long!");
+            }
             result[j] = (char*)malloc(vec[j].size() + 1);
             memset(result[i], 0, sizeof(result[i]));
         }
@@ -99,7 +102,11 @@ struct Core {
         } else if(l <=0 ){
             throw runtime_error("There is no chain in the file!");
         }
-        convertVectorToStringArray(resultRet, result);
+        try{
+            convertVectorToStringArray(resultRet, result);
+        } catch (runtime_error const &e) {
+            throw e;
+        }
         return l;
     }
 
@@ -128,7 +135,11 @@ struct Core {
             if(resultR.size() < 2  ){
                 throw runtime_error("There is no chain in the file!");
             }
-            convertVectorToStringArray(resultR, result);
+            try{
+                convertVectorToStringArray(resultR, result);
+            } catch (runtime_error &e){
+                throw e;
+            }
             return (int)resultR.size();
         } else {
             setEdge(wordsMap);
@@ -139,7 +150,11 @@ struct Core {
             } else if(l < 2 ){
                 throw runtime_error("There is no chain in the file!");
             }
-            convertVectorToStringArray(resultRet, result);
+            try{
+                convertVectorToStringArray(resultRet, result);
+            } catch {
+                throw e;
+            }
             return l;
         }
     }
@@ -171,7 +186,11 @@ struct Core {
             if(resultR.size() < 2){
                 throw runtime_error("There is no chain in the file!");
             }
-            convertVectorToStringArray(resultR, result);
+            try{
+                convertVectorToStringArray(resultR, result);
+            } catch (runtime_error &e){
+                throw e;
+            }
             return (int)resultR.size();
         } else {
             setEdge(wordsMap);
@@ -182,7 +201,11 @@ struct Core {
             } else if(l < 2){
                 throw runtime_error("There is no chain in the file!");
             }
-            convertVectorToStringArray(resultRet, result);
+            try{
+                convertVectorToStringArray(resultRet, result);
+            } catch (runtime_error &e) {
+                throw e;
+            }
             return l;
         }
 
