@@ -50,6 +50,14 @@ int isChar(char *str) {
     }
 }
 
+bool isTxT(char* str) {
+    int length = strlen(str);
+    return !(length < 4 || str[length - 4] != '.'
+        || str[length - 3] != 't'
+        || str[length - 2] != 'x'
+        || str[length - 1] != 't');
+}
+
 int readCommand(int argc, char *argv[], char **wordsR[], int *len, char *errMessage) {
     for (int i = 1; i < argc - 1; i++) {
         //if (argv[i] == "-n") {
@@ -80,13 +88,13 @@ int readCommand(int argc, char *argv[], char **wordsR[], int *len, char *errMess
             if (reject != 0) {
                 strcpy_s(errMessage, MAX_LENGTH, handleException(CONFLICT_OP, "-j"));
                 return CONFLICT_OP;
-            } else if ((r = isChar(argv[i + 1]) != 0)) {
-                if (r == -1) {
+            } else if ((r = isChar(argv[i + 1])) != 0) {
+                if (r == -1 && !isTxT(argv[i + 1])) {
                     strcpy_s(errMessage, MAX_LENGTH, handleException(J_LONG_ALPHA, argv[i + 1]));
                     return J_LONG_ALPHA;
                 } else {
                     strcpy_s(errMessage, MAX_LENGTH, handleException(J_NO_ALPHA, "str"));
-                    return J_LONG_ALPHA;
+                    return J_NO_ALPHA;
                 }
             } else if (option == Option::N_ALL_CHAIN) {
                 strcpy_s(errMessage, MAX_LENGTH, handleException(CONFLICT_OP, "-j"));
@@ -100,12 +108,13 @@ int readCommand(int argc, char *argv[], char **wordsR[], int *len, char *errMess
                 strcpy_s(errMessage, MAX_LENGTH, handleException(CONFLICT_OP, "-h"));
                 return CONFLICT_OP;
             } else if ((r = isChar(argv[i + 1])) != 0) {
-                if (r == -1) {
+                
+                if (r == -1 && !isTxT(argv[i+1])) {
                     strcpy_s(errMessage, MAX_LENGTH, handleException(H_LONG_ALPHA, argv[i + 1]));
                     return H_LONG_ALPHA;
                 } else {
                     strcpy_s(errMessage, MAX_LENGTH, handleException(H_NO_ALPHA, "str"));
-                    return H_LONG_ALPHA;
+                    return H_NO_ALPHA;
                 }
             } else if (option == Option::N_ALL_CHAIN) {
                 strcpy_s(errMessage, MAX_LENGTH, handleException(CONFLICT_OP, "-h"));
@@ -119,7 +128,7 @@ int readCommand(int argc, char *argv[], char **wordsR[], int *len, char *errMess
                 strcpy_s(errMessage, MAX_LENGTH, handleException(CONFLICT_OP, "-t"));
                 return CONFLICT_OP;
             } else if ((r = isChar(argv[i + 1])) != 0) {
-                if (r == -1) {
+                if (r == -1 && !isTxT(argv[i + 1])) {
                     strcpy_s(errMessage, MAX_LENGTH, handleException(T_LONG_ALPHA, argv[i + 1]));
                     return T_LONG_ALPHA;
                 } else {
