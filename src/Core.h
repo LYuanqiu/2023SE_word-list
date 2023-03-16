@@ -152,7 +152,7 @@ struct Core {
             }
             try{
                 convertVectorToStringArray(resultRet, result);
-            } catch {
+            } catch (runtime_error &e) {
                 throw e;
             }
             return l;

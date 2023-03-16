@@ -25,7 +25,7 @@
 #define HAS_RING (-18)
 #define LACK_COMMAND (-19)
 
-#include <word_list.h>
+#include "word_list.h"
 
 char* handleException(int error, const char* arg){
     static string errMessage;
