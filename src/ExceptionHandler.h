@@ -19,11 +19,13 @@
 #define H_LONG_ALPHA (-12)
 #define T_LONG_ALPHA (-13)
 #define J_LONG_ALPHA (-14)
-#define NOT_ARG (-15)
-#define MISSING_ARG (-16)
+#define NOT_ARG (-15) //not used??
+#define MISSING_ARG (-16) //not used??
 #define NO_CHAIN (-17)
 #define HAS_RING (-18)
 #define LACK_COMMAND (-19)
+
+#include <word_list.h>
 
 char* handleException(int error, const char* arg){
     static string errMessage;

@@ -111,7 +111,9 @@ int readCommand(int argc, char *argv[], char **wordsR[], int *len, char *errMess
             }
             isRing = true;
         } else {
-            handleExceptionWithExit(UNKNOWN_OP, argv[i]);
+            //handleExceptionWithExit(UNKNOWN_OP, argv[i]);
+            strcpy_s(errMessage, MAX_LENGTH, handleException(UNKNOWN_OP, argv[i]));
+                return UNKNOWN_OP;
         }
     }
     int length = (int) strlen(argv[argc - 1]);
