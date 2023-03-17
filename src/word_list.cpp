@@ -2,7 +2,6 @@
 // Created by Lenovo on 2023/3/8.
 //
 
-// 读文件 预处理
 
 #include "word_list.h"
 #include "Core.h"
@@ -10,7 +9,7 @@
 
 
 using namespace std;
-#define INPUT
+//#define INPUT
 #ifdef INPUT
 #include <libloaderapi.h>
 #ifdef __cplusplus
@@ -24,19 +23,19 @@ __declspec(dllimport) int __stdcall subtruct(int a, int b);
 }
 #endif
 
-// 动态调用DLL库
+
 int DynamicUseN(char *words[], int len, char *result[])
 {
-    // 运行时加载DLL库
+    
     HMODULE module = LoadLibrary("core_changed.dll");
     if (module == NULL)
     {
         printf("加载DLLTest1.dll动态库失败\n");
         return 0;
     }
-    typedef int (*gen_chains_all)(char **, int , char **); // 定义函数指针类型
+    typedef int (*gen_chains_all)(char **, int , char **);
     gen_chains_all N;
-    // 导出函数地址
+    
     N = (gen_chains_all)GetProcAddress(module, "gen_chains_all");
 
     int sum  = N(words, len, result);
@@ -44,16 +43,16 @@ int DynamicUseN(char *words[], int len, char *result[])
 }
 
 int DynamicUseW(char *words[], int len, char *result[], char headChar, char tailChar, char rejectChar, bool enable_loop) {
-    // 运行时加载DLL库
+   
     HMODULE module = LoadLibrary("core_changed.dll");
     if (module == NULL)
     {
         printf("加载DLLTest1.dll动态库失败\n");
         return 0;
     }
-    typedef int (*gen_chain_word)(char *words[], int len, char *result[], char headChar, char tailChar, char rejectChar, bool enable_loop); // 定义函数指针类型
+    typedef int (*gen_chain_word)(char *words[], int len, char *result[], char headChar, char tailChar, char rejectChar, bool enable_loop); 
     gen_chain_word W;
-    // 导出函数地址
+    
     W = (gen_chain_word)GetProcAddress(module, "gen_chain_word");
 
     int sum  = W(words, len, result, headChar, tailChar, rejectChar, enable_loop);
@@ -61,16 +60,16 @@ int DynamicUseW(char *words[], int len, char *result[], char headChar, char tail
 }
 
 int DynamicUseC(char *words[], int len, char *result[], char headChar, char tailChar, char rejectChar, bool enable_loop) {
-    // 运行时加载DLL库
+   
     HMODULE module = LoadLibrary("core_changed.dll");
     if (module == NULL)
     {
         printf("加载DLLTest1.dll动态库失败\n");
         return 0;
     }
-    typedef int (*gen_chain_char)(char *words[], int len, char *result[], char headChar, char tailChar, char rejectChar, bool enable_loop); // 定义函数指针类型
+    typedef int (*gen_chain_char)(char *words[], int len, char *result[], char headChar, char tailChar, char rejectChar, bool enable_loop); 
     gen_chain_char C;
-    // 导出函数地址
+    
     C = (gen_chain_char)GetProcAddress(module, "gen_chain_char");
 
     int sum  = C(words, len, result, headChar, tailChar, rejectChar, enable_loop);
@@ -253,14 +252,12 @@ void outPut(char *result[], int len, string outputFileName, Option op) {
     }
 }
 
+static char buffer[MAX_NUM][MAX_LENGTH];
 // option 处理文件 以及 报错
 int main_serve(int argc, char *argv[]) {
     char **words[MAX_LENGTH];
     char errMessage[MAX_LENGTH];
-//    argc = 3;
-//    argv[0] = "exe";
-//    argv[1] = "-n";
-//    argv[2] = "test.txt";
+
     int len;
     int readRet;
     readRet = readCommand(argc, argv, words, &len, errMessage);
@@ -268,7 +265,7 @@ int main_serve(int argc, char *argv[]) {
         cerr << errMessage << endl;
         return readRet;
     }
-    static char buffer[MAX_NUM][MAX_LENGTH];
+    
     char *results[MAX_NUM];
     for (int i = 0; i < MAX_NUM; i++) {
         results[i] = buffer[i];

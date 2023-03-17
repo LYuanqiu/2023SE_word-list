@@ -29,6 +29,8 @@ public:
         this->headChar = headChar;
         this->tailChar = tailChar;
         this->resultR = r;
+        memset(inDegree, 0, sizeof(inDegree));
+        memset(ringwordLength, 0, sizeof(ringwordLength));
     }
 
     int solve() {

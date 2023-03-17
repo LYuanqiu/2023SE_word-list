@@ -236,9 +236,9 @@ private:
         }
     }
 
-    //找同一个scc里的最长路径
+   
     void dfs_word(int cur, int start, int length, int total_weight) {
-        //路径记录
+       
         route[length] = cur;
         if (total_weight > maxWeight[start][cur]) {
             for (int i = 0; i <= length; i++) {
@@ -247,7 +247,7 @@ private:
             maxLength[start][cur] = length;
             maxWeight[start][cur] = total_weight;
         }
-        //下一个节点
+        
         for (auto &i: sccs[alpha2scc[start]]) {
             if (edgeNum[cur][i] > used[cur][i]) {
                 used[cur][i]++;
@@ -277,6 +277,34 @@ public:
         memset(alpha2scc, 0, sizeof(alpha2scc));
         memset(maxWeight, 0, sizeof(maxWeight));
         memset(route, 0, sizeof(route));
+    }
+
+    ~MaxWordWithRing() {
+        for (auto& vec : words) {
+            for (auto& word : vec) {
+                delete[] word.data();
+            }
+        }
+        words.clear();
+        for (auto& vec : edgeNum) {
+            vec.clear();
+        }
+        edgeNum.clear();
+        for (auto& vec1 : weights) {
+            for (auto& vec2 : vec1) {
+                vec2.clear();
+            }
+            vec1.clear();
+        }
+        weights.clear();
+        for (auto& vec : sccs) {
+            vec.clear();
+        }
+        sccs.clear();
+        for (auto& vec : sccEdge) {
+            vec.clear();
+        }
+        sccEdge.clear();
     }
 
     vector<string> handleMaxWordWithRing() {

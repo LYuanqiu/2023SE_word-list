@@ -17,7 +17,6 @@
 #include "W_Slover.h"
 #include "C_Solver.h"
 #include "word_list.h"
-#include "WithRingSolver.h"
 #include "MaxWordWithRing.h"
 
 
@@ -25,14 +24,48 @@
 static int m;
 static vector<string> s;
 static int edge[26][26];
-
-// 接口类 创建图
+int color[26] = { -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1 };
+bool flag = false;
 struct Core {
+    
+    static void dfs(int x, set<string> words[26][26]) {
+        if (flag)
+        {
+            return;
+        }
+        color[x] = 0;
+        for (int i = 0; i < 26; i++)
+        {
+            if (i == x || words[x][i].size() == 0 || color[i] == 1) {
+                continue;
+            }
+            if (color[i] == -1)
+            {
+                dfs(i, words);
+            }
+            else if (color[i] == 0)
+            {
+                flag = true;
+                return;
+            }
+        }
+        color[x] = 1;
+    }
+    static bool hasRing(set<string> words[26][26]) {
+        for (int i = 0; i < 26; i++) {
+            if (color[i] == -1) {
+                dfs(i, words);
+            }
+        }
+        return flag;
+    }
+
+
+
     static void init_words(char* words[], int len){
         s.clear();
         for(int i = 0;i < len;i++){
             string S = words[i];
-            //if(S.length() == 1) continue;
             s.push_back(S);
         }
         m = (int)s.size();
@@ -69,26 +102,18 @@ struct Core {
             if(vec[j].size() > MAX_LENGTH){
                 throw runtime_error("result too long!");
             }
-            result[j] = (char*)malloc(vec[j].size() + 1);
-            memset(result[i], 0, sizeof(result[i]));
+            
+            result[j] = (char*)malloc( vec[j].size() + 1 );
+            //memset(result[j], 0, sizeof(result[j]));
         }
         for(auto str : vec){
             const char* cstr = str.c_str();
-            //strcpy_s(result[i],sizeof(cstr),cstr);
             my_strcpy(result[i], cstr, str.size());
+            assert(result[i] != NULL);
             result[i][str.size()] = '\0';
             i++;
         }
     }
-
-    /*
-     * 求所有的单词链
-     * 参数说明
-     * words: 处理后的读入的单词
-     * len: 单词列表的长度
-     * result：单词链
-     * 返回单词链的数目
-     * */
 
     static int gen_chains_all(char *words[], int len, char *result[]) {
         vector<string> resultRet;
@@ -110,24 +135,13 @@ struct Core {
         return l;
     }
 
-    /*
-     * 找包含单词数目最多的单词链
-     *
-     * 参数说明
-     * words: 处理后的读入的单词
-     * len: 单词列表的长度
-     * result: 单词链
-     * head: 首字母/0为未指定
-     * tail: 尾字母/0为未指定
-     * except: 不允许出现的首字母/0为未指定
-     * enable_loop: 是否允许成环
-     * 返回单词链的长度
-     *
-    * */
+
     static int gen_chain_word(char *words[], int len, char *result[], char headChar, char tailChar, char rejectChar, bool enable_loop) {
         set<string> wordsMap[26][26];
+        set<string> wordsMapNoReject[26][26];
         vector<string> resultRet;
         genMap(words, len, wordsMap, rejectChar);
+        genMap(words, len, wordsMapNoReject, 0);
         if(enable_loop){
             vector<string> resultR;
             auto solver = new MaxWordWithRing(headChar, tailChar, wordsMap, Option::W_MAX);
@@ -142,6 +156,10 @@ struct Core {
             }
             return (int)resultR.size();
         } else {
+            if (hasRing(wordsMapNoReject)) {
+                throw runtime_error("There are rings in the file!");
+            }
+            
             setEdge(wordsMap);
             auto solver = new W_Slover(edge, wordsMap, &resultRet, headChar, tailChar,enable_loop);
             int l = solver->solve();
@@ -160,25 +178,12 @@ struct Core {
     }
 
 
-    /*
-     * 找包含字母数目最多的单词链
-     *
-     * 参数说明
-     * words: 处理后的读入的单词
-     * len: 单词列表的长度
-     * result: 单词链
-     * head: 首字母/0为未指定
-     * tail: 尾字母/0为未指定
-     * except: 不允许出现的首字母/0为未指定
-     * enable_loop: 是否允许成环
-     * 返回单词链的长度
-     *
-    * */
-
     static int gen_chain_char(char *words[], int len, char *result[], char headChar, char tailChar, char rejectChar, bool enable_loop) {
         set<string> wordsMap[26][26];
+        set<string> wordsMapNoReject[26][26];
         vector<string> resultRet;
         genMap(words, len, wordsMap, rejectChar);
+        genMap(words, len, wordsMapNoReject, 0);
         if(enable_loop){
             vector<string> resultR;
             auto solver = new MaxWordWithRing(headChar, tailChar, wordsMap, Option::C_MAX);
@@ -193,6 +198,10 @@ struct Core {
             }
             return (int)resultR.size();
         } else {
+            if (hasRing(wordsMapNoReject)) {
+                throw runtime_error("There are rings in the file!");
+            }
+
             setEdge(wordsMap);
             auto solver = new C_Slover(edge, wordsMap, &resultRet, headChar, tailChar,enable_loop);
             int l = solver->solve();
