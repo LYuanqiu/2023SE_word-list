@@ -203,11 +203,6 @@ namespace UnitTest1
             const char* ans[] = { "moon noox", "oom moon", "oom moon noox", "woo oom", "woo oom moon", "woo oom moon noox" };
             test_all(words, 4, ans, 6);
         }
-        //Exception:has ring
-        
-        //Exception:no chain
-
-        /*参数过少*/
 
 
         TEST_METHOD(unkonwn_option) {
@@ -232,7 +227,7 @@ namespace UnitTest1
             Assert::AreEqual(OPEN_FAILED, ret);
         }
 
-        // todo 不知道怎么打不开文件
+ 
         TEST_METHOD(open_failed_file) {
             init();
             char* args[] = { "Wordlist.exe", "-n", "unopen.txt" };
@@ -250,14 +245,6 @@ namespace UnitTest1
             Assert::AreEqual(NO_WORDS, ret);
         }
 
-        // todo 不知道怎么fail_output
-        /*
-        TEST_METHOD(fail_output_file) {
-            char* args[] = { "Wordlist.exe", "-n", "test.txt"};
-            int ret =main_serve(3, args);
-            Assert::AreEqual(NO_WORDS, ret);
-        }
-        */
         TEST_METHOD(missing_filename) {
             init();
             char* args[] = { "Wordlist.exe", "-n" };
